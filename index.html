@@ -17,13 +17,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.1/min/vs/editor/editor.main.js"
         integrity="sha512-q5FuwQfPfkE43pDXeLPh0CGl0WPAnQtfoCFFbyInQlPeYvQCiq+C7LsrNAnntYJRgNZ62+nBgjhQdOmEwLu/GA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script type="text/javascript" src="./package_8a1cf0876278e0f575a62cbf371b46c9c16bd5f2/require.js"></script>
-    <script type="text/javascript" src="./package_8a1cf0876278e0f575a62cbf371b46c9c16bd5f2/mono-config.js"></script>
-    <script type="text/javascript" src="./package_8a1cf0876278e0f575a62cbf371b46c9c16bd5f2/uno-config.js"></script>
-    <script type="text/javascript" src="./package_8a1cf0876278e0f575a62cbf371b46c9c16bd5f2/uno-bootstrap.js"></script>
-    <script async type="text/javascript" src="./package_8a1cf0876278e0f575a62cbf371b46c9c16bd5f2/dotnet.js"></script>
-    <link rel="stylesheet" type="text/css" href="./package_8a1cf0876278e0f575a62cbf371b46c9c16bd5f2/normalize.css" />
-<link rel="stylesheet" type="text/css" href="./package_8a1cf0876278e0f575a62cbf371b46c9c16bd5f2/uno-bootstrap.css" />
+    <script type="text/javascript" src="./package_735625cfa5cf9016bfcf7c7245ef17b158eb9f4b/require.js"></script>
+    <script type="text/javascript" src="./package_735625cfa5cf9016bfcf7c7245ef17b158eb9f4b/mono-config.js"></script>
+    <script type="text/javascript" src="./package_735625cfa5cf9016bfcf7c7245ef17b158eb9f4b/uno-config.js"></script>
+    <script type="text/javascript" src="./package_735625cfa5cf9016bfcf7c7245ef17b158eb9f4b/uno-bootstrap.js"></script>
+    <script async type="text/javascript" src="./package_735625cfa5cf9016bfcf7c7245ef17b158eb9f4b/dotnet.js"></script>
+    <link rel="stylesheet" type="text/css" href="./package_735625cfa5cf9016bfcf7c7245ef17b158eb9f4b/normalize.css" />
+<link rel="stylesheet" type="text/css" href="./package_735625cfa5cf9016bfcf7c7245ef17b158eb9f4b/uno-bootstrap.css" />
     
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.1/min/vs/editor/editor.main.min.css"
@@ -96,13 +96,13 @@
         const valueElement = document.querySelector("#value");
 
         answerButton.addEventListener("click", () => {
-            var evaluateRegexFull = Module.mono_bind_static_method("[RegexWasmUno] RegexWasmUno.Helpers:EvaluateRegexFull");
+            var evaluateRegex = Module.mono_bind_static_method("[RegexWasmUno] RegexWasmUno.Helpers:EvaluateRegex");
 
-            if (evaluateRegexFull) {
+            if (evaluateRegex) {
                 const start = performance.now();
-                const result = evaluateRegexFull(regexElement.value, valueElement.value);
+                const result = evaluateRegex(regexElement.value, valueElement.value);
                 const elapsed = performance.now() - start;
-                const parsed = result;
+                const parsed = JSON.parse(result);
                 console.log(parsed);
                 console.log(`Elapsed: ${elapsed}`);
                 window.editor.setValue(JSON.stringify(parsed, null, 2));
