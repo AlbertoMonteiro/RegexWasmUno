@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <script>
+        var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.1/min/vs' } };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.1/min/vs/loader.min.js"
+        integrity="sha512-O9SYDgWAM3bEzit1z6mkFd+dxKUplO/oB8UwYGAkg2Zy/WzDUQ2mYA/ysk3c0CxiXAN4u8T9JeZ0Ahk2Jj/33Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.1/min/vs/editor/editor.main.nls.min.js"
+        integrity="sha512-RBJMO+2Jx4onKLqQIADPuWIVjoc7AJXsOht63iSKCPIxelX/+3SJAH1BKfmCBMUVJdsZPxNbLDQfje0QZMz75A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.1/min/vs/editor/editor.main.js"
+        integrity="sha512-q5FuwQfPfkE43pDXeLPh0CGl0WPAnQtfoCFFbyInQlPeYvQCiq+C7LsrNAnntYJRgNZ62+nBgjhQdOmEwLu/GA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="./require.js"></script>
+    <script type="text/javascript" src="./mono-config.js"></script>
+    <script type="text/javascript" src="./uno-config.js"></script>
+    <script type="text/javascript" src="./uno-bootstrap.js"></script>
+    <script async type="text/javascript" src="./dotnet.js"></script>
+    $(ADDITIONAL_CSS)
+    $(ADDITIONAL_HEAD)
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.1/min/vs/editor/editor.main.min.css"
+        integrity="sha512-zNEMnMjqQJTh1FYoL84ldT9sMKBN4cMu1fTOKJiB23d7wYDht8Bn0XLu6F4sh9i9VV1s8QjYn8UlGw+SR/KLHw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+        window.addEventListener("load", () => {
+            window.editor = monaco.editor.create(document.getElementById('container'), {
+                value: ['{}'].join('\n'),
+                language: 'json'
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="uno-body" class="container-fluid uno-body">
+        <div class="uno-loader" loading-position="bottom" loading-alert="none">
+
+            <!-- Logo: change src to customize the logo -->
+            <img class="logo" src="" title="Uno is loading your application" />
+
+            <progress></progress>
+            <span class="alert"></span>
+        </div>
+    </div>
+    <div id="app">Loading...</div>
+    <div id="flex-container" style="display: none;">
+        <div id="try" style="flex: 1;">
+            <label>Regex:</label>
+            <input id="regex" type="text" value="(?<=[\w\s]+)(?<hey>\d+)(?= with number$)"
+                style="width: 400px;font-family: monospace;" />
+            <br />
+            <label>Text:</label>
+            <textarea id="value" type="text" value="Some value 123 with number" cols="80" rows="10"></textarea>
+            <br />
+            <label>Options:</label>
+            <ul id="allRegexOptions">
+                <li><label for="optionNone">None</label><input id="optionNone" type="checkbox" name="regexOptions"
+                        value="0" /></li>
+                <li><label for="optionIgnoreCase">IgnoreCase</label><input id="optionIgnoreCase" type="checkbox"
+                        name="regexOptions" value="1" /></li>
+                <li><label for="optionMultiline">Multiline</label><input id="optionMultiline" type="checkbox"
+                        name="regexOptions" value="2" /></li>
+                <li><label for="optionExplicitCapture">ExplicitCapture</label><input id="optionExplicitCapture"
+                        type="checkbox" name="regexOptions" value="4" /></li>
+                <li><label for="optionCompiled">Compiled</label><input id="optionCompiled" type="checkbox"
+                        name="regexOptions" value="8" /></li>
+                <li><label for="optionSingleline">Singleline</label><input id="optionSingleline" type="checkbox"
+                        name="regexOptions" value="16" /></li>
+                <li><label for="optionIgnorePatternWhitespace">IgnorePatternWhitespace</label><input
+                        id="optionIgnorePatternWhitespace" type="checkbox" name="regexOptions" value="32" /></li>
+                <li><label for="optionRightToLeft">RightToLeft</label><input id="optionRightToLeft" type="checkbox"
+                        name="regexOptions" value="64" /></li>
+                <li><label for="optionECMAScript">ECMAScript</label><input id="optionECMAScript" type="checkbox"
+                        name="regexOptions" value="256" /></li>
+                <li><label for="optionCultureInvariant">CultureInvariant</label><input id="optionCultureInvariant"
+                        type="checkbox" name="regexOptions" value="512" /></li>
+            </ul>
+            <br />
+            <button id="answer-button">Regex match?</button>
+        </div>
+        <div id="container" style="flex: 1;min-width: 800px; height: 600px; border: 1px solid grey"></div>
+    </div>
+    <script>
+        document.querySelector("#app").remove();
+        document.querySelector("#flex-container").style.display = "flex";
+        const answerButton = document.querySelector("#answer-button");
+        const regexElement = document.querySelector("#regex");
+        const valueElement = document.querySelector("#value");
+
+        answerButton.addEventListener("click", () => {
+            var evaluateRegexFull = Module.mono_bind_static_method("[RegexWasmUno] RegexWasmUno.Helpers:EvaluateRegexFull");
+
+            if (evaluateRegexFull) {
+                const start = performance.now();
+                const result = evaluateRegexFull(regexElement.value, valueElement.value);
+                const elapsed = performance.now() - start;
+                const parsed = result;
+                console.log(parsed);
+                console.log(`Elapsed: ${elapsed}`);
+                window.editor.setValue(JSON.stringify(parsed, null, 2));
+            }
+        });
+    </script>
+    <noscript>
+        <p>This application requires Javascript and WebAssembly to be enabled.</p>
+    </noscript>
+</body>
+
+</html>
