@@ -95,13 +95,13 @@
         const valueElement = document.querySelector("#value");
 
         answerButton.addEventListener("click", () => {
-            var evaluateRegexFull = Module.mono_bind_static_method("[RegexWasmUno] RegexWasmUno.Helpers:EvaluateRegexFull");
+            var evaluateRegex = Module.mono_bind_static_method("[RegexWasmUno] RegexWasmUno.Helpers:EvaluateRegex");
 
-            if (evaluateRegexFull) {
+            if (evaluateRegex) {
                 const start = performance.now();
-                const result = evaluateRegexFull(regexElement.value, valueElement.value);
+                const result = evaluateRegex(regexElement.value, valueElement.value);
                 const elapsed = performance.now() - start;
-                const parsed = result;
+                const parsed = JSON.parse(result);
                 console.log(parsed);
                 console.log(`Elapsed: ${elapsed}`);
                 window.editor.setValue(JSON.stringify(parsed, null, 2));
