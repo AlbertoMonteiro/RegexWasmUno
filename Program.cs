@@ -1,4 +1,4 @@
 ﻿using RegexWasmUno;
 
-var r = Helpers.EvaluateRegex(".", "a");
+var r = Helpers.EvaluateRegex(".", "aa");
 System.Console.WriteLine("Its ready!!!" + r);

@@ -5,35 +5,46 @@ namespace RegexWasmUno;
 
 public static class Helpers
 {
+    private const string TRUE = "true";
+    private const string FALSE = "false";
+
     public static string EvaluateRegex(string regex, string value)
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        RunRegex(regex, value, 0, stringBuilder);
-        return stringBuilder.ToString();
-    }
-
-    private static void RunRegex(string regex, string value, int regexOptions, StringBuilder builder)
-    {
-        var sp = System.Diagnostics.Stopwatch.StartNew();
-        var results = Regex.Matches(value, regex);
+        StringBuilder builder = new StringBuilder();
+        var buildSp = System.Diagnostics.Stopwatch.StartNew();
+        var results = Regex.Matches(value, regex, RegexOptions.Multiline);
         builder.Append("{ \"matches\": [");
-        for (int i = 0; i < results.Count; i++)
+        int i = 0;
+        var result = results[i];
+        builder.Append($"{{ \"success\": {(result.Success ? TRUE : FALSE)}, \"groups\": [");
+        var regexGroups = result.Groups;
+        int j = 0;
+        var currentGroup = regexGroups[j];
+        builder.Append($"{{\"index\":{currentGroup.Index},\"length\":{currentGroup.Length},\"Success\":{(currentGroup.Success ? TRUE : FALSE)},\"name\":{currentGroup.Name},\"value\":\"{currentGroup.Value}\"}}");
+        for (j++; j < regexGroups.Count; j++)
         {
-            var result = results[i];
-            if (i > 0)
-                builder.Append(",");
-            builder.Append($"{{ \"success\": {(result.Success ? "true" : "false")}, \"groups\": [");
-            var regexGroups = result.Groups;
-            for (int j = 0; j < regexGroups.Count; j++)
+            currentGroup = regexGroups[j];
+            builder.Append($",{{\"index\":{currentGroup.Index},\"length\":{currentGroup.Length},\"Success\":{(currentGroup.Success ? TRUE : FALSE)},\"name\":{currentGroup.Name},\"value\":\"{currentGroup.Value}\"}}");
+        }
+        builder.Append("]}");
+
+        for (i++; i < results.Count; i++)
+        {
+            result = results[i];
+            builder.Append($",{{ \"success\": {(result.Success ? TRUE : FALSE)}, \"groups\": [");
+            regexGroups = result.Groups;
+            j = 0;
+            currentGroup = regexGroups[j];
+            builder.Append($"{{\"index\":{currentGroup.Index},\"length\":{currentGroup.Length},\"Success\":{(currentGroup.Success ? TRUE : FALSE)},\"name\":{currentGroup.Name},\"value\":\"{currentGroup.Value}\"}}");
+            for (j++; j < regexGroups.Count; j++)
             {
-                var currentGroup = regexGroups[j];
-                if (j > 0)
-                    builder.Append(",");
-                builder.Append($"{{\"Index\":{currentGroup.Index},\"Length\":{currentGroup.Length},\"Success\":{(currentGroup.Success ? "true" : "false")},\"Name\":{currentGroup.Name},\"Value\":\"{currentGroup.Value}\"}}");
+                currentGroup = regexGroups[j];
+                builder.Append($",{{\"index\":{currentGroup.Index},\"length\":{currentGroup.Length},\"Success\":{(currentGroup.Success ? TRUE : FALSE)},\"name\":{currentGroup.Name},\"value\":\"{currentGroup.Value}\"}}");
             }
             builder.Append("]}");
         }
-        sp.Stop();
-        builder.Append($"], \"elapsed\": {sp.ElapsedMilliseconds} }}");
+        buildSp.Stop();
+        builder.Append($"], \"elapsed\": {buildSp.ElapsedMilliseconds} }}");
+        return builder.ToString();
     }
 }
