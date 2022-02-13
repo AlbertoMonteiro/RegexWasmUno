@@ -88,6 +88,10 @@
         <div id="container" style="flex: 1;min-width: 800px; height: 600px; border: 1px solid grey"></div>
     </div>
     <script>
+        function regexCallback(value) {
+            window.editor.setValue(JSON.stringify(value, null, 2));
+        }
+        window.regexCallback = regexCallback;
         document.querySelector("#app").remove();
         document.querySelector("#flex-container").style.display = "flex";
         const answerButton = document.querySelector("#answer-button");
@@ -99,12 +103,9 @@
 
             if (evaluateRegex) {
                 const start = performance.now();
-                const result = evaluateRegex(regexElement.value, valueElement.value);
+                evaluateRegex(regexElement.value, valueElement.value);
                 const elapsed = performance.now() - start;
-                const parsed = JSON.parse(result);
-                console.log(parsed);
                 console.log(`Elapsed: ${elapsed}`);
-                window.editor.setValue(JSON.stringify(parsed, null, 2));
             }
         });
     </script>
